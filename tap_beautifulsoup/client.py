@@ -48,17 +48,13 @@ class BeautifulSoupStream(Stream):
             data = f.read()
 
         soup = BeautifulSoup(data, features=self.parser)
-        elements = soup.find_all(**self.find_all_kwargs)
 
         exclude_tags = self.config["exclude_tags"]
-
         if exclude_tags:
-            for e in elements:
-                for excluded in e.find_all(exclude_tags):
-                    excluded.extract()
+            for excluded in soup.body.find_all(exclude_tags):
+                excluded.extract()
 
-        text = "".join([e.get_text() for e in elements])
-        return "\n".join([t for t in text.split("\n") if t])
+        return "".join([str(e) for e in soup.body])
 
     @property
     def find_all_kwargs(self) -> dict:
