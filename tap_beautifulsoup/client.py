@@ -79,8 +79,15 @@ class BeautifulSoupStream(Stream):
             self.download()
 
         docs = []
-        folder_url_base = urlparse(self.site_url).netloc
-        for p in Path(self.output_folder).glob(f"{folder_url_base}/**/*.html"):
+
+        parsed_url = urlparse(self.site_url)
+        glob_path = parsed_url.netloc + (
+            parsed_url.path
+            if parsed_url.path.endswith(".html")
+            else f"{parsed_url.path}/**/*.html"
+        )
+
+        for p in Path(self.output_folder).glob(glob_path):
             if p.is_dir():
                 continue
 
@@ -88,7 +95,7 @@ class BeautifulSoupStream(Stream):
             if not text:
                 self.logger.warning(f"Could not find contents in file {p}, using filters {self.find_all_kwargs}.")
 
-            page_url = f"{urlparse(self.site_url).scheme}://{p.relative_to(self.output_folder)}"
+            page_url = f"{parsed_url.scheme}://{p.relative_to(self.output_folder)}"
             record = {
                 "source": str(p),
                 "page_url": page_url,
