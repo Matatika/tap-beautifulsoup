@@ -47,7 +47,8 @@ def download(base_url: str, download_folder: Path, logger=None):
             _download_recursive(next_url, logger)
 
         if not path.suffix:
-            path = path / "index.html"
+            file_name = path.name or "index"
+            path = path / f"{file_name}.html"
 
         file_path = (
             download_folder / parsed_base_url.netloc / path.relative_to(path.anchor)

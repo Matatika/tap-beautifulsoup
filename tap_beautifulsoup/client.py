@@ -96,6 +96,10 @@ class BeautifulSoupStream(Stream):
                 self.logger.warning(f"Could not find contents in file {p}, using filters {self.find_all_kwargs}.")
 
             page_url = f"{parsed_url.scheme}://{p.relative_to(self.output_folder)}"
+            
+            if p.stem == p.parent.name or p.name == "index.html":
+                page_url = page_url[:-(len(p.name) + 1)]
+
             record = {
                 "source": str(p),
                 "page_url": page_url,
