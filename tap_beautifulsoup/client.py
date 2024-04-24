@@ -57,8 +57,7 @@ class BeautifulSoupStream(Stream):
                 for excluded in e.find_all(exclude_tags):
                     excluded.extract()
 
-        text = "".join([e.get_text() for e in elements])
-        return "\n".join([t for t in text.split("\n") if t])
+        return "\n\n".join([line for e in elements for line in e.stripped_strings])
 
     @property
     def find_all_kwargs(self) -> dict:
